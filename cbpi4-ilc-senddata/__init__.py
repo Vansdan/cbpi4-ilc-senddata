@@ -34,6 +34,21 @@ class ILCSendData(CBPiSensor):
         self.variable_ilc = self.props.get("Write Variable")       
         self.ip_ilc = self.props.get("IP ILC")
         self.url = ""
+        self.valuevariable = "0"
+        self.url_write = "http://" + self.ip_ilc + "/cgi-bin/writeVal.exe?" + self.variable_ilc + "+"
+
+    #Funktion starte Request---------------------------------------------------------------------------------------
+    
+    async def start_request(self, valuevariable):
+
+        url = self.url_write + valuevariable
+
+        logger.info("ILCSendData type=request_start url=\"%s\"" % (url))
+
+        response = self.request_session.get(url)
+        
+        logger.info("ILCSendData type=request_done url=\"%s\" http_statuscode=%s response_text=\"%s\"" % (url, response.status_code, response.text.replace('"', '\\"')))
+
 
     async def run(self):
         value=0
