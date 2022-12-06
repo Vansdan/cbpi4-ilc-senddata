@@ -33,7 +33,7 @@ class ILCSendData(CBPiSensor):
         self.request_session = requests.Session()
         self.variable_ilc_read = self.props.get("Write Variable")       
         self.ip_ilc = self.props.get("IP ILC")
-        self.url = ""
+        #self.url = ""
 
     async def run(self):
         value=0
@@ -49,7 +49,7 @@ class ILCSendData(CBPiSensor):
                         if self.SensorType == "TargetTemp":
                             current_value = int(kettle['target_temp'])
                             value = current_value
-                            url = "http://" + self.ip_ilc + "/cgi-bin/writeVal.exe?" + self.variable_ilc + "+" + value
+                            #url = "http://" + self.ip_ilc + "/cgi-bin/writeVal.exe?" + self.variable_ilc + "+" + value
                         else:
                             heater = kettle['heater']
                             kettle_heater = self.cbpi.actor.find_by_id(heater)
@@ -61,7 +61,7 @@ class ILCSendData(CBPiSensor):
 #                                logging.info("Instance: {}".format(state))
 #                                logging.info(kettle_heater)
                                 value = int(kettle_heater.power)
-                                url = "http://" + self.ip_ilc + "/cgi-bin/writeVal.exe?" + self.variable_ilc + "+" + value
+                                #url = "http://" + self.ip_ilc + "/cgi-bin/writeVal.exe?" + self.variable_ilc + "+" + value
                         if counter == 0:
                             if value != 0:
                                 self.value=value
