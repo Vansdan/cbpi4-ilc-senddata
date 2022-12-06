@@ -79,7 +79,7 @@ class ILCSendData(CBPiSensor):
                                 #response = self.request_session.get(url)
                                 counter = 15
             self.push_update(self.value,False)
-            self.url = "http://" + self.ip_ilc + "/cgi-bin/writeVal.exe?" + self.variable_ilc + "+" + self.value
+            self.url = "http://" + self.ip_ilc + "/cgi-bin/writeVal.exe?" + self.variable_ilc + "+" + str(self.value)
             #self.cbpi.ws.send(dict(topic="sensorstate", id=self.id, value=self.value))
             counter -=1
             await asyncio.sleep(2)
