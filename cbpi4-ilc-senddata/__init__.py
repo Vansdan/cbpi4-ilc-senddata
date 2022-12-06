@@ -83,7 +83,7 @@ class ILCSendData(CBPiSensor):
                                 self.log_data(self.value)
                                 self.push_update(self.value)
                                 self.value_old=self.value
-                                #self.url = "http://" + self.ip_ilc + "/cgi-bin/writeVal.exe?" + self.variable_ilc + "+" + value
+                                await self.start_request(str(value)) 
                                 logging.info("ungleich 0")
                                 counter = 15
                         else:
@@ -92,7 +92,7 @@ class ILCSendData(CBPiSensor):
                                 self.log_data(self.value)
                                 self.push_update(self.value)
                                 self.value_old=self.value
-                                #self.url = "http://" + self.ip_ilc + "/cgi-bin/writeVal.exe?" + self.variable_ilc + "+" + value
+                                await self.start_request(str(value)) 
                                 logging.info("neuer Wert")
                                 #logging.info("String: {}".format(self.url))
                                 counter = 15
