@@ -49,7 +49,7 @@ class ILCSendData(CBPiSensor):
                         if self.SensorType == "TargetTemp":
                             current_value = int(kettle['target_temp'])
                             value = current_value
-                            #url = "http://" + self.ip_ilc + "/cgi-bin/writeVal.exe?" + self.variable_ilc + "+" + value
+
                         else:
                             heater = kettle['heater']
                             kettle_heater = self.cbpi.actor.find_by_id(heater)
@@ -61,13 +61,15 @@ class ILCSendData(CBPiSensor):
 #                                logging.info("Instance: {}".format(state))
 #                                logging.info(kettle_heater)
                                 value = int(kettle_heater.power)
-                                #url = "http://" + self.ip_ilc + "/cgi-bin/writeVal.exe?" + self.variable_ilc + "+" + value
+
                         if counter == 0:
                             if value != 0:
                                 self.value=value
                                 self.log_data(self.value)
                                 self.push_update(self.value)
                                 self.value_old=self.value
+                                url = "http://" + ip_ilc + "/cgi-bin/writeVal.exe?" + variable_ilc + "+" + value
+                                logging.info("String: {}".format(url))
                                 #response = self.request_session.get(url)
                             counter = 15
                         else:
@@ -79,8 +81,8 @@ class ILCSendData(CBPiSensor):
                                 #response = self.request_session.get(url)
                                 counter = 15
             self.push_update(self.value,False)
-            self.url = "http://" + self.ip_ilc + "/cgi-bin/writeVal.exe?" + self.variable_ilc + "+" + str(self.value)                     
-            logging.info("String: {}".format(self.url))
+#            self.url = "http://" + self.ip_ilc + "/cgi-bin/writeVal.exe?" + self.variable_ilc + "+" + str(self.value)                     
+#            logging.info("String: {}".format(self.url))
             #await response = self.request_session.get(self.url)
             #self.cbpi.ws.send(dict(topic="sensorstate", id=self.id, value=self.value))
             counter -=1
