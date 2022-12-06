@@ -33,7 +33,7 @@ class ILCSendData(CBPiSensor):
         self.request_session = requests.Session()
         self.variable_ilc_read = self.props.get("Write Variable")       
         self.ip_ilc = self.props.get("IP ILC")
-        #self.url = ""
+        self.url = ""
 
     async def run(self):
         value=0
