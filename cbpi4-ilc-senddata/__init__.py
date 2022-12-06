@@ -68,7 +68,7 @@ class ILCSendData(CBPiSensor):
                                 self.log_data(self.value)
                                 self.push_update(self.value)
                                 self.value_old=self.value
-                                response = self.request_session.get(url)
+                                #response = self.request_session.get(url)
                             counter = 15
                         else:
                             if value != self.value_old:
@@ -76,7 +76,7 @@ class ILCSendData(CBPiSensor):
                                 self.log_data(self.value)
                                 self.push_update(self.value)
                                 self.value_old=self.value
-                                response = self.request_session.get(url)
+                                #response = self.request_session.get(url)
                                 counter = 15
             self.push_update(self.value,False)
             #self.cbpi.ws.send(dict(topic="sensorstate", id=self.id, value=self.value))
