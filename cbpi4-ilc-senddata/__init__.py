@@ -31,7 +31,7 @@ class ILCSendData(CBPiSensor):
         self.SensorType=self.props.get("Data","TargetTemp")
         self.log_data(self.value)
         self.request_session = requests.Session()
-        self.variable_ilc_read = self.props.get("Write Variable")       
+        self.variable_ilc = self.props.get("Write Variable")       
         self.ip_ilc = self.props.get("IP ILC")
         self.url = ""
 
