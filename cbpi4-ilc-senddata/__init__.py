@@ -5,6 +5,10 @@ import logging
 from unittest.mock import MagicMock, patch
 import asyncio
 import random
+
+import requests
+import time
+
 from cbpi.api import *
 from cbpi.api.config import ConfigType
 from cbpi.api.dataclasses import Kettle, Props, Step, Fermenter
@@ -14,7 +18,9 @@ from cbpi.api.base import CBPiBase
 logger = logging.getLogger(__name__)
 
 @parameters([Property.Kettle(label="Kettle"),
-             Property.Select(label="Data",options=["TargetTemp","Power"],description="Select kettle data to be monitored")])
+             Property.Select(label="Data",options=["TargetTemp","Power"],description="Select kettle data to be monitored"),
+             Property.Text(label="IP ILC", configurable=True, description="IP Adress of ILC SPS (example: 192.168.1.150)", default_value="192.168.1.151"),
+             Property.Text(label="Write Variable", configurable=True, description="Write Variable in SPS", default_value="CBPI4.ILC_Write_Variable")])
 class ILCSendData(CBPiSensor):
     
     def __init__(self, cbpi, id, props):
@@ -24,7 +30,10 @@ class ILCSendData(CBPiSensor):
         self.kettle_id=self.props.get("Kettle")
         self.SensorType=self.props.get("Data","TargetTemp")
         self.log_data(self.value)
-
+        self.request_session = requests.Session()
+        self.variable_ilc_read = self.props.get("Write Variable")       
+        self.ip_ilc = self.props.get("IP ILC")
+        self.url = ""
 
     async def run(self):
         value=0
@@ -40,6 +49,7 @@ class ILCSendData(CBPiSensor):
                         if self.SensorType == "TargetTemp":
                             current_value = int(kettle['target_temp'])
                             value = current_value
+                            url = "http://" + self.ip_ilc + "/cgi-bin/writeVal.exe?" + self.variable_ilc + "+" + value
                         else:
                             heater = kettle['heater']
                             kettle_heater = self.cbpi.actor.find_by_id(heater)
@@ -51,13 +61,14 @@ class ILCSendData(CBPiSensor):
 #                                logging.info("Instance: {}".format(state))
 #                                logging.info(kettle_heater)
                                 value = int(kettle_heater.power)
-
+                                url = "http://" + self.ip_ilc + "/cgi-bin/writeVal.exe?" + self.variable_ilc + "+" + value
                         if counter == 0:
                             if value != 0:
                                 self.value=value
                                 self.log_data(self.value)
                                 self.push_update(self.value)
                                 self.value_old=self.value
+                                await response = self.request_session.get(url)
                             counter = 15
                         else:
                             if value != self.value_old:
@@ -65,6 +76,7 @@ class ILCSendData(CBPiSensor):
                                 self.log_data(self.value)
                                 self.push_update(self.value)
                                 self.value_old=self.value
+                                await response = self.request_session.get(url)
                                 counter = 15
             self.push_update(self.value,False)
             #self.cbpi.ws.send(dict(topic="sensorstate", id=self.id, value=self.value))
@@ -73,9 +85,6 @@ class ILCSendData(CBPiSensor):
     
     def get_state(self):
         return dict(value=self.value)
-
-@parameters([Property.Fermenter(label="Fermenter"),
-             Property.Select(label="Data",options=["TargetTemp","Power"],description="Select kettle data to be monitored")])
 
 def setup(cbpi):
     cbpi.plugin.register("ILCSendData", ILCSendData)
