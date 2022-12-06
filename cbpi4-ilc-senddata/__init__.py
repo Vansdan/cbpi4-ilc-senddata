@@ -68,8 +68,8 @@ class ILCSendData(CBPiSensor):
                                 self.log_data(self.value)
                                 self.push_update(self.value)
                                 self.value_old=self.value
-                                url = "http://" + ip_ilc + "/cgi-bin/writeVal.exe?" + variable_ilc + "+" + value
-                                logging.info("String: {}".format(url))
+                                self.url = "http://" + self.ip_ilc + "/cgi-bin/writeVal.exe?" + self.variable_ilc + "+" + value
+                                logging.info("String: {}".format(self.url))
                                 #response = self.request_session.get(url)
                             counter = 15
                         else:
